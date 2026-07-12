@@ -49,3 +49,27 @@ function local_vbs_coursecatalog_extend_navigation(global_navigation $nav): void
     $node->showinflatnavigation = true;
     $nav->add_node($node);
 }
+
+/**
+ * Add a link to the Site Administration menu for admins.
+ *
+ * @param settings_navigation $settingsnav
+ * @param context $context
+ */
+function local_vbs_coursecatalog_extend_settings_navigation(settings_navigation $settingsnav, context $context): void {
+    if (!has_capability('moodle/site:config', context_system::instance())) {
+        return;
+    }
+    $siteadmin = $settingsnav->find('root', navigation_node::TYPE_SITE_ADMIN);
+    if (!$siteadmin) {
+        return;
+    }
+    $url = new moodle_url('/local/vbs_coursecatalog/index.php');
+    $siteadmin->add(
+        get_string('pluginname', 'local_vbs_coursecatalog'),
+        $url,
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'local_vbs_coursecatalog_admin'
+    );
+}
