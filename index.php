@@ -34,14 +34,16 @@ $PAGE->set_title(get_string('pluginname', 'local_vbs_coursecatalog'));
 $PAGE->set_heading(get_string('pluginname', 'local_vbs_coursecatalog'));
 $PAGE->set_pagelayout('standard');
 
-// Fetch all visible courses.
-$courses = get_courses('all', 'c.sortorder ASC', 'c.id, c.fullname, c.shortname, c.summary, c.startdate, c.enddate, c.visible');
+// Fetch courses visible to the current user, respecting both course and category visibility.
+// core_course_category::search_courses() enforces category visibility, so courses inside
+// a hidden category are excluded for users without moodle/category:viewhiddencategories.
+$courses = core_course_category::search_courses(
+    ['search' => ''],
+    ['limit' => 0, 'offset' => 0, 'sort' => ['sortorder' => 1]]
+);
 $catalogdata = [];
 foreach ($courses as $course) {
     if ($course->id == SITEID) {
-        continue;
-    }
-    if (!$course->visible) {
         continue;
     }
     $catalogdata[] = [
