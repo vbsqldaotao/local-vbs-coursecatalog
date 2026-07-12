@@ -20,12 +20,12 @@ Feature: Course catalog respects category visibility
   @TC-02
   Scenario: Student does not see courses in a hidden category on the catalog page
     Given I log in as "student1"
-    When I am on "/local/vbs_coursecatalog/index.php"
+    When I visit "/local/vbs_coursecatalog/index.php"
     Then I should see "Public Course 1"
     And I should not see "Hidden Course 1"
 
   Scenario: Admin can see all courses including those in hidden categories
     Given I log in as "admin"
-    When I am on "/local/vbs_coursecatalog/index.php"
+    When I visit "/local/vbs_coursecatalog/index.php"
     Then I should see "Public Course 1"
     And I should see "Hidden Course 1"
