@@ -17,6 +17,12 @@
 /**
  * Course catalog main page.
  *
+ * Fixes applied (VBS-353 to VBS-360):
+ * - Enforces local/vbs_coursecatalog:view capability (VBS-353)
+ * - Uses core_course_category::search_courses() which respects category visibility (VBS-354, VBS-359)
+ * - Adds pagination via paging_bar (VBS-355)
+ * - Renders via Mustache template through output renderer (VBS-360)
+ *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,63 +30,52 @@
 
 require_once(__DIR__ . '/../../config.php');
 
+$page    = optional_param('page', 0, PARAM_INT);
+$perpage = 24;
+
 require_login();
 
 $context = context_system::instance();
 
+// VBS-353: enforce capability — not just login.
+require_capability('local/vbs_coursecatalog:view', $context);
+
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/local/vbs_coursecatalog/index.php'));
+$PAGE->set_url(new moodle_url('/local/vbs_coursecatalog/index.php', ['page' => $page]));
 $PAGE->set_title(get_string('pluginname', 'local_vbs_coursecatalog'));
 $PAGE->set_heading(get_string('pluginname', 'local_vbs_coursecatalog'));
 $PAGE->set_pagelayout('standard');
 
-// Fetch all visible courses.
-$courses = get_courses('all', 'c.sortorder ASC', 'c.id, c.fullname, c.shortname, c.summary, c.startdate, c.enddate, c.visible');
-$catalogdata = [];
+// VBS-354 + VBS-359: use search_courses() which filters by category visibility
+// and user permission, replacing the legacy get_courses().
+$searchoptions = [
+    'offset'  => $page * $perpage,
+    'limit'   => $perpage,
+    'sort'    => ['fullname' => 1],
+];
+$courses = core_course_category::search_courses([], $searchoptions);
+$total   = core_course_category::search_courses_count([]);
+
+$coursedata = [];
 foreach ($courses as $course) {
     if ($course->id == SITEID) {
         continue;
     }
-    if (!$course->visible) {
-        continue;
-    }
-    $catalogdata[] = [
+    $coursedata[] = [
         'id'        => (int) $course->id,
-        'fullname'  => format_string($course->fullname, true, ['context' => $context]),
+        'fullname'  => format_string($course->get_formatted_name(), true, ['context' => $context]),
         'shortname' => format_string($course->shortname, true, ['context' => $context]),
-        'summary'   => format_text($course->summary, FORMAT_HTML, ['context' => $context]),
         'startdate' => $course->startdate ? userdate($course->startdate, get_string('strftimedatefullshort')) : '',
-        'enddate'   => $course->enddate ? userdate($course->enddate, get_string('strftimedatefullshort')) : '',
         'courseurl' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
     ];
 }
 
+// VBS-360: render via Mustache template through output renderer.
+/** @var \local_vbs_coursecatalog\output\renderer $renderer */
+$renderer = $PAGE->get_renderer('local_vbs_coursecatalog');
+$catalogpage = new \local_vbs_coursecatalog\output\catalog_page($coursedata, $total, $page, $perpage);
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'local_vbs_coursecatalog'));
-
-if (empty($catalogdata)) {
-    echo $OUTPUT->notification(get_string('nocourses', 'local_vbs_coursecatalog'), 'info');
-} else {
-    echo html_writer::start_tag('div', ['class' => 'vbs-coursecatalog container-fluid py-3']);
-    echo html_writer::start_tag('div', ['class' => 'row row-cols-1 row-cols-md-3 g-4']);
-    foreach ($catalogdata as $c) {
-        echo html_writer::start_tag('div', ['class' => 'col']);
-        echo html_writer::start_tag('div', ['class' => 'card h-100']);
-        echo html_writer::start_tag('div', ['class' => 'card-body']);
-        echo html_writer::tag('h5', html_writer::link($c['courseurl'], $c['fullname']), ['class' => 'card-title']);
-        echo html_writer::tag('p', $c['shortname'], ['class' => 'card-subtitle mb-2 text-muted']);
-        if ($c['startdate']) {
-            echo html_writer::tag('p', get_string('startdate', 'local_vbs_coursecatalog') . ': ' . $c['startdate'], ['class' => 'card-text small']);
-        }
-        echo html_writer::end_tag('div');
-        echo html_writer::start_tag('div', ['class' => 'card-footer']);
-        echo html_writer::link($c['courseurl'], get_string('viewcourse', 'local_vbs_coursecatalog'), ['class' => 'btn btn-primary btn-sm']);
-        echo html_writer::end_tag('div');
-        echo html_writer::end_tag('div');
-        echo html_writer::end_tag('div');
-    }
-    echo html_writer::end_tag('div');
-    echo html_writer::end_tag('div');
-}
-
+echo $renderer->render_catalog_page($catalogpage);
 echo $OUTPUT->footer();

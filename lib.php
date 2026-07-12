@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Library functions for local_vbs_coursecatalog.
  *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
@@ -24,8 +24,28 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_vbs_coursecatalog';
-$plugin->version   = 2026071201;
-$plugin->requires  = 2024042200; // Moodle 4.4 or later.
-$plugin->maturity  = MATURITY_BETA;
-$plugin->release   = '0.2.0';
+/**
+ * Add a link to the global navigation tree.
+ *
+ * @param global_navigation $nav
+ */
+function local_vbs_coursecatalog_extend_navigation(global_navigation $nav): void {
+    if (!isloggedin() || isguestuser()) {
+        return;
+    }
+    $context = context_system::instance();
+    if (!has_capability('local/vbs_coursecatalog:view', $context)) {
+        return;
+    }
+    $url  = new moodle_url('/local/vbs_coursecatalog/index.php');
+    $node = navigation_node::create(
+        get_string('pluginname', 'local_vbs_coursecatalog'),
+        $url,
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'local_vbs_coursecatalog',
+        new pix_icon('i/course', '')
+    );
+    $node->showinflatnavigation = true;
+    $nav->add_node($node);
+}

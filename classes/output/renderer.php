@@ -15,17 +15,32 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Renderer for local_vbs_coursecatalog.
  *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_vbs_coursecatalog\output;
 
-$plugin->component = 'local_vbs_coursecatalog';
-$plugin->version   = 2026071201;
-$plugin->requires  = 2024042200; // Moodle 4.4 or later.
-$plugin->maturity  = MATURITY_BETA;
-$plugin->release   = '0.2.0';
+use plugin_renderer_base;
+use moodle_url;
+use paging_bar;
+
+/**
+ * Plugin renderer.
+ */
+class renderer extends plugin_renderer_base {
+
+    /**
+     * Render the course catalog page.
+     *
+     * @param catalog_page $page
+     * @return string HTML
+     */
+    public function render_catalog_page(catalog_page $page): string {
+        $data = $page->export_for_template($this);
+        return $this->render_from_template('local_vbs_coursecatalog/course_catalog', $data);
+    }
+}

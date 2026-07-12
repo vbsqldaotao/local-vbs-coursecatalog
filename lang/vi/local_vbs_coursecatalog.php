@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Vietnamese language strings for local_vbs_coursecatalog.
  *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
@@ -24,8 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_vbs_coursecatalog';
-$plugin->version   = 2026071201;
-$plugin->requires  = 2024042200; // Moodle 4.4 or later.
-$plugin->maturity  = MATURITY_BETA;
-$plugin->release   = '0.2.0';
+$string['pluginname']       = 'Danh mục khoá học VBS';
+$string['nocourses']        = 'Không có khoá học nào.';
+$string['startdate']        = 'Ngày bắt đầu';
+$string['enddate']          = 'Ngày kết thúc';
+$string['viewcourse']       = 'Xem khoá học';
+$string['privacy:metadata'] = 'Plugin Danh mục khoá học VBS không lưu trữ dữ liệu cá nhân.';

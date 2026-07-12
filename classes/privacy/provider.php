@@ -15,17 +15,29 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Privacy provider for local_vbs_coursecatalog.
  *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_vbs_coursecatalog\privacy;
 
-$plugin->component = 'local_vbs_coursecatalog';
-$plugin->version   = 2026071201;
-$plugin->requires  = 2024042200; // Moodle 4.4 or later.
-$plugin->maturity  = MATURITY_BETA;
-$plugin->release   = '0.2.0';
+use core_privacy\local\metadata\null_provider;
+
+/**
+ * This plugin stores no personal data.
+ */
+class provider implements null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return string
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
+}
