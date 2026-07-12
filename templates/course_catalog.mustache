@@ -1,0 +1,39 @@
+{{!
+    @template local_vbs_coursecatalog/course_catalog
+
+    Template for the course catalog page.
+
+    Context variables:
+    * courses - array of course objects with id, fullname, shortname, startdate, courseurl
+    * hascourses - bool
+    * nocourses - string
+    * paging - paging bar HTML
+}}
+<div class="vbs-coursecatalog container-fluid py-3">
+    {{#hascourses}}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {{#courses}}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{{courseurl}}}">{{fullname}}</a>
+                    </h5>
+                    <p class="card-subtitle mb-2 text-muted small">{{shortname}}</p>
+                    {{#startdate}}
+                    <p class="card-text small">{{startdatelabel}}: {{startdate}}</p>
+                    {{/startdate}}
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3">
+                    <a href="{{{courseurl}}}" class="btn btn-primary btn-sm">{{viewcourse}}</a>
+                </div>
+            </div>
+        </div>
+        {{/courses}}
+    </div>
+    {{{paging}}}
+    {{/hascourses}}
+    {{^hascourses}}
+    <p class="text-muted">{{nocourses}}</p>
+    {{/hascourses}}
+</div>

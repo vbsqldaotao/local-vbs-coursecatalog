@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Vietnamese language strings for local_vbs_coursecatalog.
+ * Library functions for local_vbs_coursecatalog.
  *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
@@ -24,9 +24,28 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname']       = 'Danh mục khóa học VBS';
-$string['nocourses']        = 'Không có khóa học nào.';
-$string['startdate']        = 'Ngày bắt đầu';
-$string['enddate']          = 'Ngày kết thúc';
-$string['viewcourse']       = 'Xem khóa học';
-$string['privacy:metadata'] = 'Plugin Danh mục khóa học VBS không lưu trữ bất kỳ dữ liệu cá nhân nào.';
+/**
+ * Add a link to the global navigation tree.
+ *
+ * @param global_navigation $nav
+ */
+function local_vbs_coursecatalog_extend_navigation(global_navigation $nav): void {
+    if (!isloggedin() || isguestuser()) {
+        return;
+    }
+    $context = context_system::instance();
+    if (!has_capability('local/vbs_coursecatalog:view', $context)) {
+        return;
+    }
+    $url  = new moodle_url('/local/vbs_coursecatalog/index.php');
+    $node = navigation_node::create(
+        get_string('pluginname', 'local_vbs_coursecatalog'),
+        $url,
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'local_vbs_coursecatalog',
+        new pix_icon('i/course', '')
+    );
+    $node->showinflatnavigation = true;
+    $nav->add_node($node);
+}

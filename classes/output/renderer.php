@@ -15,18 +15,32 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Vietnamese language strings for local_vbs_coursecatalog.
+ * Renderer for local_vbs_coursecatalog.
  *
  * @package     local_vbs_coursecatalog
  * @copyright   2026 VBS Đào tạo
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_vbs_coursecatalog\output;
 
-$string['pluginname']       = 'Danh mục khóa học VBS';
-$string['nocourses']        = 'Không có khóa học nào.';
-$string['startdate']        = 'Ngày bắt đầu';
-$string['enddate']          = 'Ngày kết thúc';
-$string['viewcourse']       = 'Xem khóa học';
-$string['privacy:metadata'] = 'Plugin Danh mục khóa học VBS không lưu trữ bất kỳ dữ liệu cá nhân nào.';
+use plugin_renderer_base;
+use moodle_url;
+use paging_bar;
+
+/**
+ * Plugin renderer.
+ */
+class renderer extends plugin_renderer_base {
+
+    /**
+     * Render the course catalog page.
+     *
+     * @param catalog_page $page
+     * @return string HTML
+     */
+    public function render_catalog_page(catalog_page $page): string {
+        $data = $page->export_for_template($this);
+        return $this->render_from_template('local_vbs_coursecatalog/course_catalog', $data);
+    }
+}
