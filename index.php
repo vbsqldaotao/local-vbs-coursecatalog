@@ -28,14 +28,22 @@ require_login();
 
 $context = context_system::instance();
 
+$page    = optional_param('page', 0, PARAM_INT);
+$perpage = 12;
+
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/local/vbs_coursecatalog/index.php'));
+$PAGE->set_url(new moodle_url('/local/vbs_coursecatalog/index.php'), ['page' => $page]);
 $PAGE->set_title(get_string('pluginname', 'local_vbs_coursecatalog'));
 $PAGE->set_heading(get_string('pluginname', 'local_vbs_coursecatalog'));
 $PAGE->set_pagelayout('standard');
 
-// Fetch all visible courses.
-$courses = get_courses('all', 'c.sortorder ASC', 'c.id, c.fullname, c.shortname, c.summary, c.startdate, c.enddate, c.visible');
+// Fetch one page of visible courses.
+[$courses, $totalcount] = search_courses(
+    '',
+    ['onlywithcompletion' => false],
+    ['perpage' => $perpage, 'offset' => $page * $perpage]
+);
+
 $catalogdata = [];
 foreach ($courses as $course) {
     if ($course->id == SITEID) {
@@ -48,9 +56,9 @@ foreach ($courses as $course) {
         'id'        => (int) $course->id,
         'fullname'  => format_string($course->fullname, true, ['context' => $context]),
         'shortname' => format_string($course->shortname, true, ['context' => $context]),
-        'summary'   => format_text($course->summary, FORMAT_HTML, ['context' => $context]),
-        'startdate' => $course->startdate ? userdate($course->startdate, get_string('strftimedatefullshort')) : '',
-        'enddate'   => $course->enddate ? userdate($course->enddate, get_string('strftimedatefullshort')) : '',
+        'summary'   => format_text($course->summary ?? '', FORMAT_HTML, ['context' => $context]),
+        'startdate' => !empty($course->startdate) ? userdate($course->startdate, get_string('strftimedatefullshort')) : '',
+        'enddate'   => !empty($course->enddate) ? userdate($course->enddate, get_string('strftimedatefullshort')) : '',
         'courseurl' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
     ];
 }
@@ -58,7 +66,7 @@ foreach ($courses as $course) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'local_vbs_coursecatalog'));
 
-if (empty($catalogdata)) {
+if (empty($catalogdata) && $page === 0) {
     echo $OUTPUT->notification(get_string('nocourses', 'local_vbs_coursecatalog'), 'info');
 } else {
     echo html_writer::start_tag('div', ['class' => 'vbs-coursecatalog container-fluid py-3']);
@@ -80,6 +88,9 @@ if (empty($catalogdata)) {
         echo html_writer::end_tag('div');
     }
     echo html_writer::end_tag('div');
+
+    echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $PAGE->url);
+
     echo html_writer::end_tag('div');
 }
 
