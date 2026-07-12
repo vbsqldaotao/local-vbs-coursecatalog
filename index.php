@@ -28,6 +28,8 @@ require_login();
 
 $context = context_system::instance();
 
+require_capability('local/vbs_coursecatalog:view', $context);
+
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/vbs_coursecatalog/index.php'));
 $PAGE->set_title(get_string('pluginname', 'local_vbs_coursecatalog'));
