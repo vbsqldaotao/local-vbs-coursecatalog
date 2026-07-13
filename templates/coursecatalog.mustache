@@ -1,0 +1,85 @@
+{{!
+    Template for Course Catalog card grid.
+
+    @package    local_vbs_coursecatalog
+    @copyright  2026 VBS Đào tạo
+    @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Context variables:
+      - searchvalue (string)  current search keyword
+      - statusvalue (string)  current status filter
+      - status_options (array) [{value, label, selected}]
+      - hascourses (bool)
+      - courses (array) [{id, fullname, shortname, statuslabel, startdate, courseurl}]
+      - nocourses (string)  translated empty-state message
+      - paging (string)     rendered HTML pagination bar (raw)
+      - searchlabel (string)
+      - searchplaceholder (string)
+      - statuslabel (string)
+      - filterlabel (string)
+}}
+<div class="vbs-coursecatalog container-fluid py-3">
+
+    {{! Search / filter form }}
+    <form method="get" action="" class="mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label for="vbs-cc-search" class="form-label">{{searchlabel}}</label>
+                <input type="text"
+                       id="vbs-cc-search"
+                       name="search"
+                       class="form-control"
+                       placeholder="{{searchplaceholder}}"
+                       value="{{searchvalue}}">
+            </div>
+            <div class="col-md-3">
+                <label for="vbs-cc-status" class="form-label">{{statuslabel}}</label>
+                <select id="vbs-cc-status" name="status" class="form-select">
+                    {{#status_options}}
+                    <option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>
+                    {{/status_options}}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">{{filterlabel}}</button>
+            </div>
+        </div>
+    </form>
+
+    {{#hascourses}}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {{#courses}}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{courseurl}}">{{fullname}}</a>
+                    </h5>
+                    <p class="card-subtitle mb-2 text-muted">{{shortname}}</p>
+                    <span class="badge bg-secondary mb-2">{{statuslabel}}</span>
+                    {{#startdate}}
+                    <p class="card-text small text-muted">{{startdatelabel}}: {{startdate}}</p>
+                    {{/startdate}}
+                </div>
+                <div class="card-footer">
+                    <a href="{{courseurl}}" class="btn btn-primary btn-sm">{{viewcourselabel}}</a>
+                </div>
+            </div>
+        </div>
+        {{/courses}}
+    </div>
+    {{/hascourses}}
+
+    {{^hascourses}}
+    <div class="alert alert-info" role="alert">
+        {{nocourses}}
+    </div>
+    {{/hascourses}}
+
+    {{#paging}}
+    <div class="mt-4">
+        {{{paging}}}
+    </div>
+    {{/paging}}
+
+</div>
