@@ -24,9 +24,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname']  = 'VBS Course Catalog';
-$string['nocourses']   = 'No courses available.';
-$string['startdate']   = 'Start date';
-$string['enddate']     = 'End date';
-$string['viewcourse']  = 'View course';
-$string['privacy:metadata'] = 'The VBS Course Catalog plugin does not store any personal data.';
+$string['pluginname']         = 'VBS Course Catalog';
+$string['nocourses']          = 'No courses available.';
+$string['startdate']          = 'Start date';
+$string['enddate']            = 'End date';
+$string['viewcourse']         = 'View course';
+$string['search']             = 'Search';
+$string['search_label']       = 'Keyword';
+$string['search_placeholder'] = 'Enter a keyword...';
+$string['status']             = 'Status';
+$string['status_all']         = 'All';
+$string['status_upcoming']    = 'Upcoming';
+$string['status_inprogress']  = 'In progress';
+$string['status_past']        = 'Finished';
+$string['filter']             = 'Filter';
+$string['privacy:metadata']   = 'The VBS Course Catalog plugin does not store any personal data.';

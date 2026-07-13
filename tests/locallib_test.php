@@ -85,7 +85,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $course->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$course->id, $ids);
         $this->assertGreaterThanOrEqual(1, $result['total']);
     }
@@ -100,7 +100,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $this->add_self_enrol($course, 0, 0);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$course->id, $ids);
     }
 
@@ -114,7 +114,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $course->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertNotContains((int)$course->id, $ids);
     }
 
@@ -126,7 +126,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $user = $gen->create_user();
 
         $result = vbs_coursecatalog_get_courses($user->id, '', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertNotContains(1, $ids);
     }
 
@@ -142,7 +142,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $other->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, 'kế toán', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$course->id, $ids);
         $this->assertNotContains((int)$other->id, $ids);
     }
@@ -157,7 +157,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $course->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, 'kt001', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$course->id, $ids);
     }
 
@@ -177,7 +177,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $past->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', 'upcoming', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$upcoming->id, $ids);
         $this->assertNotContains((int)$inprog->id, $ids);
         $this->assertNotContains((int)$past->id, $ids);
@@ -197,7 +197,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $upcoming->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', 'inprogress', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$inprog->id, $ids);
         $this->assertNotContains((int)$upcoming->id, $ids);
     }
@@ -216,7 +216,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $inprog->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', 'past', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$past->id, $ids);
         $this->assertNotContains((int)$inprog->id, $ids);
     }
@@ -245,7 +245,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $gen->enrol_user($user->id, $other->id);
 
         $result = vbs_coursecatalog_get_courses($user->id, 'kế toán', 'inprogress', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertContains((int)$match->id, $ids);
         $this->assertNotContains((int)$other->id, $ids);
     }
@@ -359,7 +359,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $this->add_self_enrol($course, 0, $now - DAYSECS); // expired yesterday
 
         $result = vbs_coursecatalog_get_courses($user->id, '', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $this->assertNotContains((int)$course->id, $ids);
     }
 
@@ -374,7 +374,7 @@ class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
         $this->add_self_enrol($course, 0, 0);
 
         $result = vbs_coursecatalog_get_courses($user->id, '', '', 0, 12);
-        $ids = array_column($result['courses'], 'id');
+        $ids = array_map('intval', array_column($result['courses'], 'id'));
         $occurrences = array_count_values($ids);
         $this->assertEquals(1, $occurrences[(int)$course->id] ?? 0);
     }
