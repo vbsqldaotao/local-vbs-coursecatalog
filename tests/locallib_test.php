@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/local/vbs_coursecatalog/locallib.php');
 /**
  * Tests for vbs_coursecatalog_get_courses() and vbs_coursecatalog_get_status().
  */
-class local_vbs_coursecatalog_locallib_testcase extends advanced_testcase {
+class local_vbs_coursecatalog_locallib_test extends advanced_testcase {
 
     protected function setUp(): void {
         $this->resetAfterTest(true);
