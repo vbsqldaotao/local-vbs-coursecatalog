@@ -24,9 +24,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname']       = 'Danh mục khóa học VBS';
-$string['nocourses']        = 'Không có khóa học nào.';
-$string['startdate']        = 'Ngày bắt đầu';
-$string['enddate']          = 'Ngày kết thúc';
-$string['viewcourse']       = 'Xem khóa học';
-$string['privacy:metadata'] = 'Plugin Danh mục khóa học VBS không lưu trữ bất kỳ dữ liệu cá nhân nào.';
+$string['pluginname']         = 'Danh mục khóa học VBS';
+$string['nocourses']          = 'Không có khóa học nào.';
+$string['startdate']          = 'Ngày bắt đầu';
+$string['enddate']            = 'Ngày kết thúc';
+$string['viewcourse']         = 'Xem khóa học';
+$string['search']             = 'Tìm kiếm';
+$string['search_label']       = 'Từ khóa';
+$string['search_placeholder'] = 'Nhập từ khóa...';
+$string['status']             = 'Trạng thái';
+$string['status_all']         = 'Tất cả';
+$string['status_upcoming']    = 'Sắp diễn ra';
+$string['status_inprogress']  = 'Đang diễn ra';
+$string['status_past']        = 'Đã kết thúc';
+$string['filter']             = 'Lọc';
+$string['privacy:metadata']   = 'Plugin Danh mục khóa học VBS không lưu trữ bất kỳ dữ liệu cá nhân nào.';
