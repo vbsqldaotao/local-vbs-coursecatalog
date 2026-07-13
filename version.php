@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_vbs_coursecatalog';
 $plugin->version   = 2026071200;
-$plugin->requires  = 2024042200; // Moodle 4.4 or later.
+$plugin->requires  = 2026042100; // Moodle 5.2.1 or later.
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->release   = '0.1.0';
